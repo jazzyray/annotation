@@ -33,6 +33,11 @@
       <artifactId>dropwizard-java8-jdbi</artifactId>
       <version>${dropwizard.java8bundle.version}</version>
     </dependency>
+      <dependency>
+          <groupId>com.smoketurner</groupId>
+          <artifactId>dropwizard-swagger</artifactId>
+          <version>0.9.3-1</version>
+      </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -83,6 +88,45 @@
           </execution>
         </executions>
       </plugin>
+        <plugin>
+            <groupId>com.github.kongchen</groupId>
+            <artifactId>swagger-maven-plugin</artifactId>
+            <version>3.1.4</version>
+            <configuration>
+                <apiSources>
+                    <apiSource>
+                        <springmvc>false</springmvc>
+                        <locations>com.ontotext.annotation.resource</locations>
+                        <schemes>http,https</schemes>
+                        <host>localhost:8089</host>
+                        <basePath>/annotations</basePath>
+                        <info>
+                            <title>Annotation API</title>
+                            <version>v0.0.1</version>
+                            <description>Annotation API (subset of W3C Open Annotation). Annotate content with concepts</description>
+                            <termsOfService>http://www.yourterms.com</termsOfService>
+                            <contact>
+                                <email>jem.rayfield@ontotext.com</email>
+                                <name>Jem Rayfield</name>
+                                <url>http://ontotext.com</url>
+                            </contact>
+                        </info>
+                        <swaggerDirectory>${basedir}</swaggerDirectory>
+                        <swaggerFileName>swagger</swaggerFileName>
+                        <outputFormats>yaml</outputFormats>
+                    </apiSource>
+                </apiSources>
+
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
 
