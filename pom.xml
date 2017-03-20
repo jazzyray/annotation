@@ -38,6 +38,11 @@
           <artifactId>dropwizard-swagger</artifactId>
           <version>0.9.3-1</version>
       </dependency>
+      <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>2.5</version>
+      </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -103,7 +108,7 @@
                         <info>
                             <title>Annotation API</title>
                             <version>v0.0.1</version>
-                            <description>Annotation API (subset of W3C Open Annotation). Annotate content with concepts</description>
+                            <description>Annotation API (Using W3C Open Annotation Model (not protocol)). Supporting the Annotation of content with concepts.</description>
                             <termsOfService>http://www.yourterms.com</termsOfService>
                             <contact>
                                 <email>jem.rayfield@ontotext.com</email>
@@ -111,7 +116,7 @@
                                 <url>http://ontotext.com</url>
                             </contact>
                         </info>
-                        <swaggerDirectory>${basedir}/gen-swagger</swaggerDirectory>
+                        <swaggerDirectory>${basedir}</swaggerDirectory>
                         <swaggerFileName>swagger</swaggerFileName>
                         <outputFormats>yaml</outputFormats>
                     </apiSource>

@@ -1,8 +1,8 @@
 ---
 swagger: "2.0"
 info:
-  description: "Annotation API (subset of W3C Open Annotation). Annotate content with\
-    \ concepts"
+  description: "Annotation API (Using W3C Open Annotation Model (not protocol)). Supporting\
+    \ the Annotation of content with concepts."
   version: "v0.0.1"
   title: "Annotation API"
   termsOfService: "http://www.yourterms.com"
@@ -18,12 +18,51 @@ schemes:
 - "http"
 - "https"
 paths:
+  /annotations:
+    get:
+      tags:
+      - "Annotation API"
+      summary: "Finds Annotations, by contentId if required, pageable with offsets"
+      description: ""
+      operationId: "annotations"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "contentId"
+        in: "query"
+        description: "Target content Id"
+        required: false
+        type: "string"
+        default: "963db081-4200-430f-89dc-5756ca8edf04"
+      - name: "max"
+        in: "query"
+        description: "The number of records to display per page"
+        required: false
+        type: "integer"
+        default: 10
+        format: "int32"
+      - name: "offset"
+        in: "query"
+        description: "The page to be returned"
+        required: false
+        type: "integer"
+        default: 0
+        format: "int32"
+      responses:
+        200:
+          description: "Success"
+          headers:
+            X-Cache:
+              type: "boolean"
+              description: "Explains whether or not a cache was used"
+        400:
+          description: "Invalid Content Id supplied"
   /annotations/{annotationId}:
     get:
       tags:
       - "Annotation API"
       summary: "Finds Annotation by id"
-      description: "A single annotation can be returned"
+      description: ""
       operationId: "annotation"
       produces:
       - "application/ld+json; profile=\"http://www.w3.org/ns/anno.jsonld\""
@@ -33,6 +72,7 @@ paths:
         description: "Annotation Id to be retrieved. Must be a valid UUID"
         required: true
         type: "string"
+        default: "21b4a142-af56-4dce-9f6c-0a6875933353"
       responses:
         200:
           description: "Success"
@@ -40,13 +80,19 @@ paths:
             X-Cache:
               type: "boolean"
               description: "Explains whether or not a cache was used"
+            ETag:
+              type: "string"
+              description: "Annotation ETag for cache control"
+            Vary:
+              type: "string"
+              description: "Make sure proxies cache by Vary"
+            Link:
+              type: "string"
+              description: "Linked Data Platform resource type"
+            Allow:
+              type: "string"
+              description: "CORS Allowed Methods"
         400:
           description: "Invalid Annotation Id supplied"
         404:
           description: "Annotation not found"
-definitions:
-Annotation:
-    properties:
-      annotation_id:
-        type: string
-        description: Unique identifier representing a specific annotation
