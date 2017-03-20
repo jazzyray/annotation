@@ -13,8 +13,40 @@ info:
 host: "localhost:8089"
 basePath: "/annotations"
 tags:
-- name: "Annotation API using a subset of the W3C open annotation Annotation protocol\
-    \ https:www.w3.orgTRannotation-protocol"
+- name: "Annotation API"
 schemes:
 - "http"
 - "https"
+paths:
+  /annotations/{annotationId}:
+    get:
+      tags:
+      - "Annotation API"
+      summary: "Finds Annotation by id"
+      description: "A single annotation can be returned"
+      operationId: "annotation"
+      produces:
+      - "application/ld+json; profile=\"http://www.w3.org/ns/anno.jsonld\""
+      parameters:
+      - name: "annotationId"
+        in: "path"
+        description: "Annotation Id to be retrieved. Must be a valid UUID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Success"
+          headers:
+            X-Cache:
+              type: "boolean"
+              description: "Explains whether or not a cache was used"
+        400:
+          description: "Invalid Annotation Id supplied"
+        404:
+          description: "Annotation not found"
+definitions:
+Annotation:
+    properties:
+      annotation_id:
+        type: string
+        description: Unique identifier representing a specific annotation

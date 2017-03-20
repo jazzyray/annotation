@@ -4,17 +4,19 @@ import com.codahale.metrics.annotation.Timed;
 import com.ontotext.annotation.representation.AnnotationAysnchResult;
 import com.ontotext.annotation.representation.AnnotationResult;
 import com.ontotext.annotation.service.AnnotationService;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.UUID;
 
-@Api("Annotation API using a subset of the W3C open annotation Annotation protocol https://www.w3.org/TR/annotation-protocol/")
+import static com.ontotext.annotation.resource.AnnotationResource.ANNOTATION_MIME_TYPE;
+
+@Api("Annotation API")
 @Path("/annotations")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces({ANNOTATION_MIME_TYPE})
 public class AnnotationResource {
 
     public static final String ANNOTATION_MIME_TYPE = "application/ld+json; profile=\"http://www.w3.org/ns/anno.jsonld\"";
@@ -42,7 +44,13 @@ public class AnnotationResource {
     @Timed
     @Path("/{annotationId}")
     @Produces(ANNOTATION_MIME_TYPE)
-    public Response status(@PathParam("annotationId") String annotationId) {
+    @ApiOperation(value = "Finds Annotation by id",
+            notes = "A single annotation can be returned")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid Annotation Id supplied"),
+            @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Annotation not found"),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Success", responseHeaders = @ResponseHeader(name = "X-Cache", description = "Explains whether or not a cache was used", response = Boolean.class)) })
+    public Response annotation(@ApiParam(value = "Annotation Id to be retrieved. Must be a valid UUID", required = true) @PathParam("annotationId") String annotationId) {
         AnnotationResult annotationResult = new AnnotationResult();
         return Response.ok().entity("{\n" +
                 "  \"@context\": \"http://www.w3.org/ns/anno.jsonld\",\n" +

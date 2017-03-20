@@ -4,6 +4,16 @@ Annotation API
 Annotation API for the annotation of content with named entities
 
 
+# Quick test
+
+```
+docker-compose up
+```
+
+http://localhost:8089/swagger
+
+
+
 # Docker
 
 ## Build

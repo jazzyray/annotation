@@ -111,7 +111,7 @@
                                 <url>http://ontotext.com</url>
                             </contact>
                         </info>
-                        <swaggerDirectory>${basedir}</swaggerDirectory>
+                        <swaggerDirectory>${basedir}/gen-swagger</swaggerDirectory>
                         <swaggerFileName>swagger</swaggerFileName>
                         <outputFormats>yaml</outputFormats>
                     </apiSource>
