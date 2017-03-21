@@ -163,7 +163,6 @@ curl -X POST --header 'Content-Type: application/ld+json; profile="http://www.w3
 docker build .
 ```
   
-  
 ## Tag
 ### Get the image id
 
