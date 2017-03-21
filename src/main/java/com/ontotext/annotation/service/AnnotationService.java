@@ -44,7 +44,8 @@ public class AnnotationService {
         }
     }
 
-    public AnnotationResult asynchAnnotation(URI uri) {
+    public AnnotationResult asynchAnnotation(URI uri, String body) {
+        // @TODO fix location
         return new AnnotationResult(uri.toString() + SEP + UUID.randomUUID().toString(), ASYNCH_PROCESSING_STATE_PROCESSING);
     }
 
@@ -52,7 +53,13 @@ public class AnnotationService {
         return new AnnotationResult(uri.toString(), ASYNCH_PROCESSING_STATE_COMPLETE);
     }
 
-    public AnnotationResult annotation(URI uri) {
+    public AnnotationResult annotation(URI uri, String annotation) {
+        return new AnnotationResult(uri.toString(), ASYNCH_PROCESSING_STATE_COMPLETE);
+    }
+
+    public AnnotationResult annotations(URI uri, String contentId, String annotations){
+        UUID contentUUID = UUID.fromString(contentId);
+
         return new AnnotationResult(uri.toString(), ASYNCH_PROCESSING_STATE_COMPLETE);
     }
 

@@ -30,7 +30,7 @@
         }
       }],
       "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
-      "@id": "http://localhost:8089/annotationgraph/UUID-D"
+      "@id": "http://localhost:8090/content/UUID-C"
     }]
   }
 }

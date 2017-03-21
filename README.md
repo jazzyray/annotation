@@ -27,6 +27,39 @@ curl -X GET --header 'Accept: application/ld+json' --header 'X-Request-ID: 1231'
 curl -X GET --header 'Accept: application/json' --header 'X-Request-ID: 1233212' 'http://localhost:8089/annotations?contentId=963db081-4200-430f-89dc-5756ca8edf04&max=10&offset=0'
 ```
 
+### Create annotations by contentId
+```
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' --header 'X-Request-ID: 456456' -d '{
+  "items": [{
+    "@graph": [{
+      "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": {
+        "@id": "http://locahost:8089/annotations/UUID-B",
+        "type": "SpecificResource",
+        "purpose": "tagging",
+        "source": "http://somehost/concept/UUID-X",
+        "ontoa:confidence": "0.89",
+        "ontoa:relevance": "0.63",
+        "ontoa:tagType": "http://ontotext.com/annotation/about"
+      },
+      "target": {
+        "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04",
+        "type": "Text",
+        "selector": {
+          "type": "TextPositionSelector",
+          "start": 412,
+          "end": 795
+        }
+      }
+    }],
+    "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
+    "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04"
+  }]
+}' 'http://localhost:8089/annotations?contentId=963db081-4200-430f-89dc-5756ca8edf04'
+```
+
 ### Create annoations 
 ```
 curl -X POST --header 'Content-Type: application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"' --header 'Accept: application/json' --header 'X-Request-ID: 1234' -d '{

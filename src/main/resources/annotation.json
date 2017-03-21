@@ -13,7 +13,7 @@
       "ontoa:tagType": "http://ontotext.com/annotation/about"
     },
     "target": {
-      "@id": "http://localhost:8090/content/UUID-C",
+      "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04",
       "type": "Text",
       "selector": {
         "type": "TextPositionSelector",
@@ -23,5 +23,5 @@
     }
   }],
   "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
-  "@id": "http://localhost:8089/annotationgraph/UUID-D"
+  "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04"
 }

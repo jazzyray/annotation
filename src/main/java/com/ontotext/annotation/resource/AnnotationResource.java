@@ -44,7 +44,6 @@ public class AnnotationResource {
                             @ResponseHeader(name = HttpHeaders.LINK, description = "Linked Data Platform resource type", response = String.class)}) })
     public Response annotation(@ApiParam(value = "Annotation Id to be retrieved. Must be a valid UUID", required = true, defaultValue = MOCK_ANNOTATION_ID) @PathParam("annotationId") String annotationId,
                                @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId) {
-
         AnnotationService annotationService = new AnnotationService();
 
         String result = "";
@@ -68,6 +67,7 @@ public class AnnotationResource {
     }
 
     @GET
+    @Timed
     @Produces({MediaType.APPLICATION_JSON})
     @ApiOperation(value = "Finds Annotations, by contentId if required, pageable with offsets")
     @ApiResponses(value = {
@@ -78,13 +78,10 @@ public class AnnotationResource {
                             @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
                             @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class),
                             @ResponseHeader(name = HttpHeaders.LINK, description = "Linked Data Platform resource type", response = String.class)}) })
-    @Timed
     public Response annotations(@ApiParam(value = "Target content Id", required = false, defaultValue = MOCK_CONTENT_ID) @QueryParam("contentId") String contentId,
                                 @ApiParam(value = "The number of records to display per page", required = false, defaultValue = "10") @QueryParam("max") Integer max,
                                 @ApiParam(value = "The page to be returned", required = false, defaultValue = "0") @QueryParam("offset") Integer offset,
                                 @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId) {
-
-
         String result = "";
         try {
             result = annotationService.getAnnotationsByContentId(contentId);
@@ -104,6 +101,63 @@ public class AnnotationResource {
     }
 
     @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Create Annotations by contentId")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid Content Id supplied"),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Success",
+                    responseHeaders = {
+                            @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.LINK, description = "Linked Data Platform resource type", response = String.class)}) })
+    public Response createAnnotations(@ApiParam(name = "body", value = "Annotations to create", required = true ) String annotations,
+                                      @ApiParam(value = "Target content Id", required = false, defaultValue = MOCK_CONTENT_ID) @QueryParam("contentId") String contentId,
+                                      @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
+                                      @Context UriInfo uriInfo) {
+
+        AnnotationResult annotationResult = this.annotationService.annotations(uriInfo.getBaseUriBuilder().path("annoations/" + contentId).build(), contentId, annotations);
+
+        return Response.ok(annotationResult.getLocation()).entity(annotationResult)
+                .header("Location",annotationResult.getLocation())
+                .header(HttpHeaders.VARY, "Accept")
+                .header(HttpHeaders.ETAG, "_87e52ce126126")
+                .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                .build();
+    }
+
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Update Annotations by contentId")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid Content Id supplied"),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Success",
+                    responseHeaders = {
+                            @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.LINK, description = "Linked Data Platform resource type", response = String.class)}) })
+    public Response updateAnnotations(@ApiParam(name = "body", value = "Annotations to create", required = true ) String annotations,
+                                      @ApiParam(value = "Target content Id", required = false, defaultValue = MOCK_CONTENT_ID) @QueryParam("contentId") String contentId,
+                                      @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
+                                      @Context UriInfo uriInfo) {
+
+        AnnotationResult annotationResult = this.annotationService.annotations(uriInfo.getBaseUriBuilder().path("annoations/" + contentId).build(), contentId, annotations);
+
+        return Response.ok(annotationResult.getLocation()).entity(annotationResult)
+                .header("Location",annotationResult.getLocation())
+                .header(HttpHeaders.VARY, "Accept")
+                .header(HttpHeaders.ETAG, "_87e52ce126126")
+                .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                .build();
+    }
+
+
+    @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({ANNOTATION_MIME_TYPE})
     @ApiOperation(value = "Asynchronous publication/creation of annotations")
@@ -112,7 +166,7 @@ public class AnnotationResource {
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid Annotations supplied"),
             @ApiResponse(code = HttpURLConnection.HTTP_ACCEPTED, message = "Processing",
-                    responseHeaders = {@ResponseHeader(name = "X-Cache", description = "Explains whether or not a cache was used", response = Boolean.class),
+                    responseHeaders = {
                             @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
                             @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
                             @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class)}) })
@@ -120,7 +174,7 @@ public class AnnotationResource {
                                            @ApiParam(name = "annotationdId", value = "Annotation id uuid to create", required = true ) @QueryParam("annotationdId") String annotationId,
                                            @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
                                            @Context UriInfo uriInfo) {
-       AnnotationResult annotationResult = this.annotationService.asynchAnnotation(uriInfo.getRequestUri());
+       AnnotationResult annotationResult = this.annotationService.asynchAnnotation(uriInfo.getBaseUriBuilder().path("annoations/aysch/").build(), annotation);
 
         return Response.accepted(annotationResult.getLocation()).entity(annotationResult)
                 .header("Location",annotationResult.getLocation())
@@ -159,13 +213,13 @@ public class AnnotationResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({ANNOTATION_MIME_TYPE})
-    @ApiOperation(value = "Publication/creation of annotations")
+    @ApiOperation(value = "Publication/creation of annotation by If")
     @Timed
     @Path("/{annotationId}")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid Annotations supplied"),
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Processing",
-                    responseHeaders = {@ResponseHeader(name = "X-Cache", description = "Explains whether or not a cache was used", response = Boolean.class),
+                    responseHeaders = {
                             @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
                             @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
                             @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class)}) })
@@ -173,7 +227,7 @@ public class AnnotationResource {
                                            @ApiParam(name = "annotationdId", value = "Annotation id uuid to create", required = true ) @QueryParam("annotationdId") String annotationId,
                                            @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
                                            @Context UriInfo uriInfo) {
-        AnnotationResult annotationResult = this.annotationService.annotation(uriInfo.getBaseUriBuilder().path("annoations/" + annotationId).build());
+        AnnotationResult annotationResult = this.annotationService.annotation(uriInfo.getBaseUriBuilder().path("annoations/" + annotationId).build(), annotation);
 
         return Response.ok(annotationResult.getLocation()).entity(annotationResult)
                 .header("Location",annotationResult.getLocation())
@@ -187,13 +241,13 @@ public class AnnotationResource {
     @PUT
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({ANNOTATION_MIME_TYPE})
-    @ApiOperation(value = "Publication/creation of annotations")
+    @ApiOperation(value = "Publication/update of an annotation by Id")
     @Timed
     @Path("/{annotationId}")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid Annotations supplied"),
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Processing",
-                    responseHeaders = {@ResponseHeader(name = "X-Cache", description = "Explains whether or not a cache was used", response = Boolean.class),
+                    responseHeaders = {
                             @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
                             @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
                             @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class)}) })
@@ -201,7 +255,7 @@ public class AnnotationResource {
                                      @ApiParam(name = "annotationdId", value = "Annotation id uuid to create", required = true ) @QueryParam("annotationdId") String annotationId,
                                      @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
                                      @Context UriInfo uriInfo) {
-        AnnotationResult annotationResult = this.annotationService.annotation(uriInfo.getBaseUriBuilder().path("annoations/" + annotationId).build());
+        AnnotationResult annotationResult = this.annotationService.annotation(uriInfo.getBaseUriBuilder().path("annoations/" + annotationId).build(), annotation);
 
         return Response.ok(annotationResult.getLocation()).entity(annotationResult)
                 .header("Location",annotationResult.getLocation())
