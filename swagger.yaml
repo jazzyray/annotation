@@ -165,7 +165,7 @@ paths:
               description: "CORS Allowed Methods"
         400:
           description: "Invalid Content Id supplied"
-  /annotations/asynch/annotationId:
+  /annotations/asynch/{annotationId}:
     post:
       tags:
       - "Annotation API"
@@ -183,8 +183,8 @@ paths:
         required: true
         schema:
           type: "string"
-      - name: "annotationdId"
-        in: "query"
+      - name: "annotationId"
+        in: "path"
         description: "Annotation id uuid to create"
         required: true
         type: "string"
@@ -208,7 +208,7 @@ paths:
               description: "CORS Allowed Methods"
         400:
           description: "Invalid Annotations supplied"
-  /annotations/asynch/processId:
+  /annotations/asynch/{processId}:
     get:
       tags:
       - "Annotation API"
@@ -219,7 +219,7 @@ paths:
       - "application/json"
       parameters:
       - name: "processId"
-        in: "query"
+        in: "path"
         description: "Asynchronous Transaction IUd"
         required: true
         type: "string"
