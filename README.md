@@ -1,4 +1,4 @@
-Annotation API Mock and Specificationb
+Annotation API Mock and Specification
 =
 
 Mock Annotation API for the annotation of content with named entities
