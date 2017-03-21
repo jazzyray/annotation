@@ -1,4 +1,3 @@
----
 swagger: "2.0"
 info:
   description: "Annotation API (Using W3C Open Annotation Model (not protocol)). Supporting\
