@@ -33,6 +33,16 @@
       <artifactId>dropwizard-java8-jdbi</artifactId>
       <version>${dropwizard.java8bundle.version}</version>
     </dependency>
+      <dependency>
+          <groupId>com.smoketurner</groupId>
+          <artifactId>dropwizard-swagger</artifactId>
+          <version>0.9.3-1</version>
+      </dependency>
+      <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>2.5</version>
+      </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -52,19 +62,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.3</version>
+        <version>3.0.0</version>
         <configuration>
           <createDependencyReducedPom>true</createDependencyReducedPom>
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
         </configuration>
         <executions>
           <execution>
@@ -78,11 +78,83 @@
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>com.ontotext.annotation.AnnotationApplication</mainClass>
                 </transformer>
+
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                          <resource>json/annoation.json</resource>
+                          <file>json/annotation.json</file>
+                      </transformer>
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                          <resource>json/annoations.json</resource>
+                          <file>json/annotations.json</file>
+                      </transformer>
+                      <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
+                          <resource>json/annotations-by-contentId.json</resource>
+                          <file>json/annotations-by-contentId.json</file>
+                      </transformer>
+
+
               </transformers>
+                <filters>
+                    <filter>
+                        <!--
+                          Exclude files that sign a jar
+                          (one or multiple of the dependencies).
+                          One may not repack a signed jar without
+                          this, or you will get a
+                          SecurityException at program start.
+                        -->
+                        <artifact>*:*</artifact>
+                        <excludes>
+                            <exclude>META-INF/*.SF</exclude>
+                            <exclude>META-INF/*.RSA</exclude>
+                            <exclude>META-INF/*.INF</exclude> <!-- This one may not be required -->
+                        </excludes>
+                    </filter>
+                </filters>
             </configuration>
+
           </execution>
         </executions>
       </plugin>
+        <plugin>
+            <groupId>com.github.kongchen</groupId>
+            <artifactId>swagger-maven-plugin</artifactId>
+            <version>3.1.4</version>
+            <configuration>
+                <apiSources>
+                    <apiSource>
+                        <springmvc>false</springmvc>
+                        <locations>com.ontotext.annotation.resource</locations>
+                        <schemes>http,https</schemes>
+                        <host>localhost:8089</host>
+                        <basePath>/annotations</basePath>
+                        <info>
+                            <title>Annotation API</title>
+                            <version>v0.0.1</version>
+                            <description>Annotation API (Using W3C Open Annotation Model (not protocol)). Supporting the Annotation of content with concepts.</description>
+                            <termsOfService>http://www.yourterms.com</termsOfService>
+                            <contact>
+                                <email>jem.rayfield@ontotext.com</email>
+                                <name>Jem Rayfield</name>
+                                <url>http://ontotext.com</url>
+                            </contact>
+                        </info>
+                        <swaggerDirectory>${basedir}</swaggerDirectory>
+                        <swaggerFileName>swagger</swaggerFileName>
+                        <outputFormats>yaml</outputFormats>
+                    </apiSource>
+                </apiSources>
+
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
 

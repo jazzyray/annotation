@@ -7,6 +7,8 @@ import com.ontotext.annotation.service.AnnotationService;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class AnnotationApplication extends Application<AnnotationConfiguration> {
 
@@ -32,5 +34,12 @@ public class AnnotationApplication extends Application<AnnotationConfiguration> 
     public void initialize(Bootstrap<AnnotationConfiguration> bootstrap) {
        // @TODO Add health check
        // bootstrap.addBundle(new HealthCheckBundle());
+
+        bootstrap.addBundle(new SwaggerBundle<AnnotationConfiguration>() {
+            @Override
+            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(AnnotationConfiguration configuration) {
+                return configuration.swaggerBundleConfiguration;
+            }
+        });
     }
 }
