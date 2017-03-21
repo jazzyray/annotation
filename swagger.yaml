@@ -55,8 +55,89 @@ paths:
             X-Cache:
               type: "boolean"
               description: "Explains whether or not a cache was used"
+            ETag:
+              type: "string"
+              description: "Annotation ETag for cache control"
+            Vary:
+              type: "string"
+              description: "Make sure proxies cache by Vary"
+            Link:
+              type: "string"
+              description: "Linked Data Platform resource type"
+            Allow:
+              type: "string"
+              description: "CORS Allowed Methods"
         400:
           description: "Invalid Content Id supplied"
+  /annotations/asynch:
+    post:
+      tags:
+      - "Annotation API"
+      summary: "Asynchronous publication/creation of annotations"
+      description: ""
+      operationId: "createAnnotationAsynch"
+      consumes:
+      - "application/ld+json; profile=\"http://www.w3.org/ns/anno.jsonld\""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Annotation to create"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        202:
+          description: "Processing"
+          headers:
+            X-Cache:
+              type: "boolean"
+              description: "Explains whether or not a cache was used"
+            ETag:
+              type: "string"
+              description: "Annotation ETag for cache control"
+            Vary:
+              type: "string"
+              description: "Make sure proxies cache by Vary"
+            Allow:
+              type: "string"
+              description: "CORS Allowed Methods"
+        400:
+          description: "Invalid Annotations supplied"
+  /annotations/asynch/{processId}:
+    get:
+      tags:
+      - "Annotation API"
+      summary: "Asynchronous publication/creation annotation status"
+      description: ""
+      operationId: "statusAnnotationAsynch"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "processId"
+        in: "query"
+        description: "Asynchronous Transaction IUd"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Ok"
+          headers:
+            X-Cache:
+              type: "boolean"
+              description: "Explains whether or not a cache was used"
+            ETag:
+              type: "string"
+              description: "Annotation ETag for cache control"
+            Vary:
+              type: "string"
+              description: "Make sure proxies cache by Vary"
+            Allow:
+              type: "string"
+              description: "CORS Allowed Methods"
+        400:
+          description: "Invalid ProcessId supplied"
   /annotations/{annotationId}:
     get:
       tags:
@@ -73,6 +154,11 @@ paths:
         required: true
         type: "string"
         default: "21b4a142-af56-4dce-9f6c-0a6875933353"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "Transaction Id"
+        required: false
+        type: "string"
       responses:
         200:
           description: "Success"

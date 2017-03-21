@@ -1,21 +1,19 @@
 package com.ontotext.annotation.resource;
 
 import com.codahale.metrics.annotation.Timed;
-import com.ontotext.annotation.representation.AnnotationAysnchResult;
+import com.ontotext.annotation.representation.AnnotationResult;
 
 import com.ontotext.annotation.service.AnnotationService;
 import io.swagger.annotations.*;
 
 import javax.ws.rs.*;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.core.*;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.util.UUID;
 
 import static com.ontotext.annotation.resource.AnnotationResource.ANNOTATION_MIME_TYPE;
 import static com.ontotext.annotation.service.AnnotationService.MOCK_ANNOTATION_ID;
 import static com.ontotext.annotation.service.AnnotationService.MOCK_CONTENT_ID;
-
 
 @Api("Annotation API")
 @Path("/annotations")
@@ -44,7 +42,8 @@ public class AnnotationResource {
                             @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
                             @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class),
                             @ResponseHeader(name = HttpHeaders.LINK, description = "Linked Data Platform resource type", response = String.class)}) })
-    public Response annotation(@ApiParam(value = "Annotation Id to be retrieved. Must be a valid UUID", required = true, defaultValue = MOCK_ANNOTATION_ID) @PathParam("annotationId") String annotationId) {
+    public Response annotation(@ApiParam(value = "Annotation Id to be retrieved. Must be a valid UUID", required = true, defaultValue = MOCK_ANNOTATION_ID) @PathParam("annotationId") String annotationId,
+                               @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId) {
 
         AnnotationService annotationService = new AnnotationService();
 
@@ -79,9 +78,11 @@ public class AnnotationResource {
                             @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
                             @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class),
                             @ResponseHeader(name = HttpHeaders.LINK, description = "Linked Data Platform resource type", response = String.class)}) })
+    @Timed
     public Response annotations(@ApiParam(value = "Target content Id", required = false, defaultValue = MOCK_CONTENT_ID) @QueryParam("contentId") String contentId,
                                 @ApiParam(value = "The number of records to display per page", required = false, defaultValue = "10") @QueryParam("max") Integer max,
-                                @ApiParam(value = "The page to be returned", required = false, defaultValue = "0") @QueryParam("offset") Integer offset) {
+                                @ApiParam(value = "The page to be returned", required = false, defaultValue = "0") @QueryParam("offset") Integer offset,
+                                @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId) {
 
 
         String result = "";
@@ -102,34 +103,113 @@ public class AnnotationResource {
         }
     }
 
-
     @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({ANNOTATION_MIME_TYPE})
+    @ApiOperation(value = "Asynchronous publication/creation of annotations")
     @Timed
-    @Path("/asynch")
-    public Response createAnnotationAsynch(@Context UriInfo uriInfo) {
-        UUID uuid = UUID.randomUUID();
+    @Path("/asynch/{annotationId}")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid Annotations supplied"),
+            @ApiResponse(code = HttpURLConnection.HTTP_ACCEPTED, message = "Processing",
+                    responseHeaders = {@ResponseHeader(name = "X-Cache", description = "Explains whether or not a cache was used", response = Boolean.class),
+                            @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class)}) })
+    public Response createAnnotationAsynch(@ApiParam(name = "body", value = "Annotation to create", required = true ) String annotation,
+                                           @ApiParam(name = "annotationdId", value = "Annotation id uuid to create", required = true ) @QueryParam("annotationdId") String annotationId,
+                                           @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
+                                           @Context UriInfo uriInfo) {
+       AnnotationResult annotationResult = this.annotationService.asynchAnnotation(uriInfo.getRequestUri());
 
-        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-        builder.path(uuid.toString());
-        URI locationURI = builder.build();
+        return Response.accepted(annotationResult.getLocation()).entity(annotationResult)
+                .header("Location",annotationResult.getLocation())
+                .header(HttpHeaders.VARY, "Accept")
+                .header(HttpHeaders.ETAG, "_87e52ce126126")
+                .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                .build();
+    }
 
-        AnnotationAysnchResult annotationResult = new AnnotationAysnchResult(locationURI.toString(), "PROCESSING");
-        return Response.accepted(locationURI).entity(annotationResult).header("Location",locationURI.getPath()).build();
+    @GET
+    @Path("/asynch/{processId}")
+    @Produces({MediaType.APPLICATION_JSON})
+    @ApiOperation(value = "Asynchronous publication/creation annotation status")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid ProcessId supplied"),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Ok",
+                    responseHeaders = {@ResponseHeader(name = "X-Cache", description = "Explains whether or not a cache was used", response = Boolean.class),
+                            @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class)}) })
+    public Response statusAnnotationAsynch(@ApiParam(value = "Asynchronous Transaction IUd", required = true) @QueryParam("processId") String processId,
+                                           @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
+                                           @Context UriInfo uriInfo) {
+        AnnotationResult annotationResult = this.annotationService.asynchAnnotationStatus(uriInfo.getBaseUriBuilder().path("annoations/aysch/" + processId).build());
+
+        return Response.ok().entity(annotationResult)
+                .header("Location",annotationResult.getLocation())
+                .header(HttpHeaders.VARY, "Accept")
+                .header(HttpHeaders.ETAG, "_87e52ce126126")
+                .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                .build();
     }
 
     @POST
-    @Timed
-    public Response createAnnotation(@Context UriInfo uriInfo) {
-
-        return Response.accepted().build();
-    }
-
-    @POST
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({ANNOTATION_MIME_TYPE})
+    @ApiOperation(value = "Publication/creation of annotations")
     @Timed
     @Path("/{annotationId}")
-    public Response updateAnnotation(@Context UriInfo uriInfo) {
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid Annotations supplied"),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Processing",
+                    responseHeaders = {@ResponseHeader(name = "X-Cache", description = "Explains whether or not a cache was used", response = Boolean.class),
+                            @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class)}) })
+    public Response createAnnotation(@ApiParam(name = "body", value = "Annotation to create", required = true ) String annotation,
+                                           @ApiParam(name = "annotationdId", value = "Annotation id uuid to create", required = true ) @QueryParam("annotationdId") String annotationId,
+                                           @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
+                                           @Context UriInfo uriInfo) {
+        AnnotationResult annotationResult = this.annotationService.annotation(uriInfo.getBaseUriBuilder().path("annoations/" + annotationId).build());
 
-        return Response.accepted().build();
+        return Response.ok(annotationResult.getLocation()).entity(annotationResult)
+                .header("Location",annotationResult.getLocation())
+                .header(HttpHeaders.VARY, "Accept")
+                .header(HttpHeaders.ETAG, "_87e52ce126126")
+                .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                .build();
+    }
+
+    @PUT
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({ANNOTATION_MIME_TYPE})
+    @ApiOperation(value = "Publication/creation of annotations")
+    @Timed
+    @Path("/{annotationId}")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid Annotations supplied"),
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Processing",
+                    responseHeaders = {@ResponseHeader(name = "X-Cache", description = "Explains whether or not a cache was used", response = Boolean.class),
+                            @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ETAG, description = "Annotation ETag for cache control", response = String.class),
+                            @ResponseHeader(name = HttpHeaders.ALLOW, description = "CORS Allowed Methods", response = String.class)}) })
+    public Response updateAnnotation(@ApiParam(name = "body", value = "Annotation to create", required = true ) String annotation,
+                                     @ApiParam(name = "annotationdId", value = "Annotation id uuid to create", required = true ) @QueryParam("annotationdId") String annotationId,
+                                     @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
+                                     @Context UriInfo uriInfo) {
+        AnnotationResult annotationResult = this.annotationService.annotation(uriInfo.getBaseUriBuilder().path("annoations/" + annotationId).build());
+
+        return Response.ok(annotationResult.getLocation()).entity(annotationResult)
+                .header("Location",annotationResult.getLocation())
+                .header(HttpHeaders.VARY, "Accept")
+                .header(HttpHeaders.ETAG, "_87e52ce126126")
+                .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                .build();
     }
 
 }

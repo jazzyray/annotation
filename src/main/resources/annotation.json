@@ -1,13 +1,16 @@
 {
   "@graph": [{
-    "@id": "http://localhost:8089/annotations/UUID-A",
+    "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
     "type": "Annotation",
     "motivation": "tagging",
     "body": {
       "@id": "http://locahost:8089/annotations/UUID-B",
       "type": "SpecificResource",
       "purpose": "tagging",
-      "source": "http://somehost/concept/UUID-X"
+      "source": "http://somehost/concept/UUID-X",
+      "ontoa:confidence": "0.89",
+      "ontoa:relevance": "0.63",
+      "ontoa:tagType": "http://ontotext.com/annotation/about"
     },
     "target": {
       "@id": "http://localhost:8090/content/UUID-C",
@@ -19,6 +22,6 @@
       }
     }
   }],
-  "@context": "http://www.w3.org/ns/anno.jsonld",
+  "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
   "@id": "http://localhost:8089/annotationgraph/UUID-D"
 }

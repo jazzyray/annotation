@@ -1,9 +1,9 @@
 package com.ontotext.annotation.service;
 
-import com.ontotext.annotation.resource.AnnotationResource;
-import org.apache.commons.io.IOUtils;
+import com.ontotext.annotation.representation.AnnotationResult;
+import com.ontotext.annotation.util.ResourceUtil;
 
-import java.io.IOException;
+import java.net.URI;
 import java.util.UUID;
 
 public class AnnotationService {
@@ -11,21 +11,17 @@ public class AnnotationService {
     public static final String MOCK_ANNOTATION_ID = "21b4a142-af56-4dce-9f6c-0a6875933353";
     public static final String MOCK_CONTENT_ID = "963db081-4200-430f-89dc-5756ca8edf04";
 
-    private static final String ANNOTATION_JSON_FILENAME = "/annotation.json";
-    private final String ANNOTATION_JSON;
+    public static final String ANNOTATION_JSON_FILENAME = "/annotation.json";
+    public static final String ANNOTATION_JSON = ResourceUtil.getResourceFileAsString(ANNOTATION_JSON_FILENAME);
 
-    private static final String ANNOTATION_BY_ID_JSON_FILENAME = "/annotations-by-contentid.json";
-    private final String ANNOTATION_BY_ID_JSON;
+    public static final String ANNOTATION_BY_ID_JSON_FILENAME = "/annotations-by-contentid.json";
+    public static final String ANNOTATION_BY_ID_JSON = ResourceUtil.getResourceFileAsString(ANNOTATION_BY_ID_JSON_FILENAME);
 
-    public AnnotationService() {
-        try {
-            ANNOTATION_JSON = IOUtils.toString(AnnotationResource.class.getResourceAsStream(ANNOTATION_JSON_FILENAME), "UTF-8");
-            ANNOTATION_BY_ID_JSON = IOUtils.toString(AnnotationResource.class.getResourceAsStream(ANNOTATION_BY_ID_JSON_FILENAME), "UTF-8");
+    public static final String ASYNCH_PROCESSING_STATE_PROCESSING = "PROCESSING";
+    public static final String ASYNCH_PROCESSING_STATE_COMPLETE = "COMPLETE";
 
-        } catch (IOException io) {
-            throw new RuntimeException(io);
-        }
-    }
+    private static final String SEP = "/";
+
 
     public String getAnnotationById(String annotationId) {
         UUID annotationUUID = UUID.fromString(annotationId);
@@ -46,6 +42,18 @@ public class AnnotationService {
         } else {
             return "";
         }
+    }
+
+    public AnnotationResult asynchAnnotation(URI uri) {
+        return new AnnotationResult(uri.toString() + SEP + UUID.randomUUID().toString(), ASYNCH_PROCESSING_STATE_PROCESSING);
+    }
+
+    public AnnotationResult asynchAnnotationStatus(URI uri) {
+        return new AnnotationResult(uri.toString(), ASYNCH_PROCESSING_STATE_COMPLETE);
+    }
+
+    public AnnotationResult annotation(URI uri) {
+        return new AnnotationResult(uri.toString(), ASYNCH_PROCESSING_STATE_COMPLETE);
     }
 
 }
