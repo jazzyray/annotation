@@ -7,7 +7,7 @@ Mock Annotation API for the annotation of content with named entities
 # Quick test
 
 ```
-docker-compose up
+docker-compose up -d
 ```
 
 ## For swagger documentation

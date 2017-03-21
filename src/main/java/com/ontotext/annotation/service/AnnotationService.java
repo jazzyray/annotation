@@ -11,10 +11,10 @@ public class AnnotationService {
     public static final String MOCK_ANNOTATION_ID = "21b4a142-af56-4dce-9f6c-0a6875933353";
     public static final String MOCK_CONTENT_ID = "963db081-4200-430f-89dc-5756ca8edf04";
 
-    public static final String ANNOTATION_JSON_FILENAME = "/annotation.json";
+    public static final String ANNOTATION_JSON_FILENAME = "json/annotation.json";
     public static final String ANNOTATION_JSON = ResourceUtil.getResourceFileAsString(ANNOTATION_JSON_FILENAME);
 
-    public static final String ANNOTATION_BY_ID_JSON_FILENAME = "/annotations-by-contentid.json";
+    public static final String ANNOTATION_BY_ID_JSON_FILENAME = "json/annotations-by-contentId.json";
     public static final String ANNOTATION_BY_ID_JSON = ResourceUtil.getResourceFileAsString(ANNOTATION_BY_ID_JSON_FILENAME);
 
     public static final String ASYNCH_PROCESSING_STATE_PROCESSING = "PROCESSING";

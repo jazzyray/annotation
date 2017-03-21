@@ -48,6 +48,11 @@ paths:
         type: "integer"
         default: 0
         format: "int32"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "Transaction Id"
+        required: false
+        type: "string"
       responses:
         200:
           description: "Success"
@@ -69,7 +74,99 @@ paths:
               description: "CORS Allowed Methods"
         400:
           description: "Invalid Content Id supplied"
-  /annotations/asynch:
+    post:
+      tags:
+      - "Annotation API"
+      summary: "Create Annotations by contentId"
+      description: ""
+      operationId: "createAnnotations"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Annotations to create"
+        required: true
+        schema:
+          type: "string"
+      - name: "contentId"
+        in: "query"
+        description: "Target content Id"
+        required: false
+        type: "string"
+        default: "963db081-4200-430f-89dc-5756ca8edf04"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "Transaction Id"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Success"
+          headers:
+            ETag:
+              type: "string"
+              description: "Annotation ETag for cache control"
+            Vary:
+              type: "string"
+              description: "Make sure proxies cache by Vary"
+            Link:
+              type: "string"
+              description: "Linked Data Platform resource type"
+            Allow:
+              type: "string"
+              description: "CORS Allowed Methods"
+        400:
+          description: "Invalid Content Id supplied"
+    put:
+      tags:
+      - "Annotation API"
+      summary: "Update Annotations by contentId"
+      description: ""
+      operationId: "updateAnnotations"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Annotations to create"
+        required: true
+        schema:
+          type: "string"
+      - name: "contentId"
+        in: "query"
+        description: "Target content Id"
+        required: false
+        type: "string"
+        default: "963db081-4200-430f-89dc-5756ca8edf04"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "Transaction Id"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Success"
+          headers:
+            ETag:
+              type: "string"
+              description: "Annotation ETag for cache control"
+            Vary:
+              type: "string"
+              description: "Make sure proxies cache by Vary"
+            Link:
+              type: "string"
+              description: "Linked Data Platform resource type"
+            Allow:
+              type: "string"
+              description: "CORS Allowed Methods"
+        400:
+          description: "Invalid Content Id supplied"
+  /annotations/asynch/{annotationId}:
     post:
       tags:
       - "Annotation API"
@@ -87,13 +184,20 @@ paths:
         required: true
         schema:
           type: "string"
+      - name: "annotationdId"
+        in: "query"
+        description: "Annotation id uuid to create"
+        required: true
+        type: "string"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "Transaction Id"
+        required: false
+        type: "string"
       responses:
         202:
           description: "Processing"
           headers:
-            X-Cache:
-              type: "boolean"
-              description: "Explains whether or not a cache was used"
             ETag:
               type: "string"
               description: "Annotation ETag for cache control"
@@ -119,6 +223,11 @@ paths:
         in: "query"
         description: "Asynchronous Transaction IUd"
         required: true
+        type: "string"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "Transaction Id"
+        required: false
         type: "string"
       responses:
         200:
@@ -182,3 +291,87 @@ paths:
           description: "Invalid Annotation Id supplied"
         404:
           description: "Annotation not found"
+    post:
+      tags:
+      - "Annotation API"
+      summary: "Publication/creation of annotation by If"
+      description: ""
+      operationId: "createAnnotation"
+      consumes:
+      - "application/ld+json; profile=\"http://www.w3.org/ns/anno.jsonld\""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Annotation to create"
+        required: true
+        schema:
+          type: "string"
+      - name: "annotationdId"
+        in: "query"
+        description: "Annotation id uuid to create"
+        required: true
+        type: "string"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "Transaction Id"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Processing"
+          headers:
+            ETag:
+              type: "string"
+              description: "Annotation ETag for cache control"
+            Vary:
+              type: "string"
+              description: "Make sure proxies cache by Vary"
+            Allow:
+              type: "string"
+              description: "CORS Allowed Methods"
+        400:
+          description: "Invalid Annotations supplied"
+    put:
+      tags:
+      - "Annotation API"
+      summary: "Publication/update of an annotation by Id"
+      description: ""
+      operationId: "updateAnnotation"
+      consumes:
+      - "application/ld+json; profile=\"http://www.w3.org/ns/anno.jsonld\""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Annotation to create"
+        required: true
+        schema:
+          type: "string"
+      - name: "annotationdId"
+        in: "query"
+        description: "Annotation id uuid to create"
+        required: true
+        type: "string"
+      - name: "X-Request-ID"
+        in: "header"
+        description: "Transaction Id"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Processing"
+          headers:
+            ETag:
+              type: "string"
+              description: "Annotation ETag for cache control"
+            Vary:
+              type: "string"
+              description: "Make sure proxies cache by Vary"
+            Allow:
+              type: "string"
+              description: "CORS Allowed Methods"
+        400:
+          description: "Invalid Annotations supplied"

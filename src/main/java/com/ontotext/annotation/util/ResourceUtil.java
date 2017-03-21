@@ -1,15 +1,16 @@
 package com.ontotext.annotation.util;
 
-import com.ontotext.annotation.resource.AnnotationResource;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class ResourceUtil {
 
     public static final String getResourceFileAsString(String resource) {
         try {
-            return IOUtils.toString(AnnotationResource.class.getResourceAsStream(resource), "UTF-8");
+            InputStream is = ResourceUtil.class.getClassLoader().getResourceAsStream(resource);
+            return IOUtils.toString(is, "UTF-8");
         } catch (IOException io) {
             throw new RuntimeException(io);
         }
