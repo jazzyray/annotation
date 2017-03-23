@@ -19,17 +19,89 @@ http://localhost:8089/swagger
 
 ### Get annotation
 ```
-curl -X GET --header 'Accept: application/ld+json' --header 'X-Request-ID: 1231' 'http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353'
+curl -X GET --header 'Accept: application/ld+json' --header 'X-Request-ID: 234234' 'http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353'
+```
+
+### Create annoation
+```
+curl -X POST --header 'Content-Type: application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"' --header 'Accept: application/json' --header 'X-Request-ID: 234234' -d '{
+  "@graph": [{
+    "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
+    "type": "Annotation",
+    "motivation": "tagging",
+    "body": {
+      "@id": "http://locahost:8089/annotations/UUID-B",
+      "type": "SpecificResource",
+      "purpose": "tagging",
+      "source": "http://somehost/concept/UUID-X",
+      "ontoa:confidence": "0.89",
+      "ontoa:relevance": "0.63",
+      "ontoa:tagType": "http://ontotext.com/annotation/about",
+      "ontoa:type": "concept",
+      "ontoa:status": "suggested"
+    },
+    "target": {
+      "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04",
+      "type": "Text",
+      "selector": {
+        "type": "TextPositionSelector",
+        "start": 412,
+        "end": 795
+      }
+    }
+  }],
+  "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
+  "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04"
+}' 'http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353?asynch=false'
+```
+
+### Create annotation asynchronously
+```
+{
+  "@graph": [{
+    "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
+    "type": "Annotation",
+    "motivation": "tagging",
+    "body": {
+      "@id": "http://locahost:8089/annotations/UUID-B",
+      "type": "SpecificResource",
+      "purpose": "tagging",
+      "source": "http://somehost/concept/UUID-X",
+      "ontoa:confidence": "0.89",
+      "ontoa:relevance": "0.63",
+      "ontoa:tagType": "http://ontotext.com/annotation/about",
+      "ontoa:type": "concept",
+      "ontoa:status": "suggested"
+    },
+    "target": {
+      "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04",
+      "type": "Text",
+      "selector": {
+        "type": "TextPositionSelector",
+        "start": 412,
+        "end": 795
+      }
+    }
+  }],
+  "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
+  "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04"
+}
+```
+
+### Get annoation creation asynchronous status
+```
+curl -X GET --header 'Accept: application/json' --header 'X-Request-ID: 123123' 'http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353/status/970e5044-1821-4dc0-8aae-a28e971a0531'
+
 ```
 
 ### Get annotations by contentId
 ```
-curl -X GET --header 'Accept: application/json' --header 'X-Request-ID: 1233212' 'http://localhost:8089/annotations?contentId=963db081-4200-430f-89dc-5756ca8edf04&max=10&offset=0'
+curl -X GET --header 'Accept: application/json' --header 'X-Request-ID: 234234' 'http://localhost:8089/annotations?contentId=963db081-4200-430f-89dc-5756ca8edf04&max=10&offset=0'
 ```
 
 ### Create annotations by contentId
 ```
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' --header 'X-Request-ID: 456456' -d '{
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' --header 'X-Request-ID: 123123' -d '{
   "items": [{
     "@graph": [{
       "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
@@ -42,7 +114,9 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
         "source": "http://somehost/concept/UUID-X",
         "ontoa:confidence": "0.89",
         "ontoa:relevance": "0.63",
-        "ontoa:tagType": "http://ontotext.com/annotation/about"
+        "ontoa:tagType": "http://ontotext.com/annotation/about",
+        "ontoa:type": "concept",
+        "ontoa:status": "suggested"
       },
       "target": {
         "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04",
@@ -57,103 +131,49 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
     "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
     "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04"
   }]
-}' 'http://localhost:8089/annotations?contentId=963db081-4200-430f-89dc-5756ca8edf04'
+}' 'http://localhost:8089/annotations?contentId=963db081-4200-430f-89dc-5756ca8edf04&asynch=false'
 ```
 
-### Create annoations 
+### Create annotations asynchronously 
 ```
-curl -X POST --header 'Content-Type: application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"' --header 'Accept: application/json' --header 'X-Request-ID: 1234' -d '{
-  "@graph": [{
-    "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
-    "type": "Annotation",
-    "motivation": "tagging",
-    "body": {
-      "@id": "http://locahost:8089/annotations/UUID-B",
-      "type": "SpecificResource",
-      "purpose": "tagging",
-      "source": "http://somehost/concept/UUID-X",
-      "ontoa:confidence": "0.89",
-      "ontoa:relevance": "0.63",
-      "ontoa:tagType": "http://ontotext.com/annotation/about"
-    },
-    "target": {
-      "@id": "http://localhost:8090/content/UUID-C",
-      "type": "Text",
-      "selector": {
-        "type": "TextPositionSelector",
-        "start": 412,
-        "end": 795
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' --header 'X-Request-ID: 123123' -d '{
+  "items": [{
+    "@graph": [{
+      "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
+      "type": "Annotation",
+      "motivation": "tagging",
+      "body": {
+        "@id": "http://locahost:8089/annotations/UUID-B",
+        "type": "SpecificResource",
+        "purpose": "tagging",
+        "source": "http://somehost/concept/UUID-X",
+        "ontoa:confidence": "0.89",
+        "ontoa:relevance": "0.63",
+        "ontoa:tagType": "http://ontotext.com/annotation/about",
+        "ontoa:type": "concept",
+        "ontoa:status": "suggested"
+      },
+      "target": {
+        "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04",
+        "type": "Text",
+        "selector": {
+          "type": "TextPositionSelector",
+          "start": 412,
+          "end": 795
+        }
       }
-    }
-  }],
-  "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
-  "@id": "http://localhost:8089/annotationgraph/UUID-D"
-}' 'http://localhost:8089/annotations/{annotationId}?annotationdId=21b4a142-af56-4dce-9f6c-0a6875933353'
+    }],
+    "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
+    "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04"
+  }]
+}' 'http://localhost:8089/annotations?contentId=963db081-4200-430f-89dc-5756ca8edf04&asynch=true'
 ```
 
-### Update annotation
-``` 
-curl -X PUT --header 'Content-Type: application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"' --header 'Accept: application/json' --header 'X-Request-ID: 2343453333' -d '{
-  "@graph": [{
-    "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
-    "type": "Annotation",
-    "motivation": "tagging",
-    "body": {
-      "@id": "http://locahost:8089/annotations/UUID-B",
-      "type": "SpecificResource",
-      "purpose": "tagging",
-      "source": "http://somehost/concept/UUID-X",
-      "ontoa:confidence": "0.89",
-      "ontoa:relevance": "0.63",
-      "ontoa:tagType": "http://ontotext.com/annotation/about"
-    },
-    "target": {
-      "@id": "http://localhost:8090/content/UUID-C",
-      "type": "Text",
-      "selector": {
-        "type": "TextPositionSelector",
-        "start": 412,
-        "end": 795
-      }
-    }
-  }],
-  "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
-  "@id": "http://localhost:8089/annotationgraph/UUID-D"
-}' 'http://localhost:8089/annotations/{annotationId}?annotationdId=21b4a142-af56-4dce-9f6c-0a6875933353'
+### Get aysnch status
 ```
-
-### Create annotation asynchronously 
-```
-curl -X POST --header 'Content-Type: application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"' --header 'Accept: application/json' --header 'X-Request-ID: 12344' -d '{
-  "@graph": [{
-    "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
-    "type": "Annotation",
-    "motivation": "tagging",
-    "body": {
-      "@id": "http://locahost:8089/annotations/UUID-B",
-      "type": "SpecificResource",
-      "purpose": "tagging",
-      "source": "http://somehost/concept/UUID-X",
-      "ontoa:confidence": "0.89",
-      "ontoa:relevance": "0.63",
-      "ontoa:tagType": "http://ontotext.com/annotation/about"
-    },
-    "target": {
-      "@id": "http://localhost:8090/content/UUID-C",
-      "type": "Text",
-      "selector": {
-        "type": "TextPositionSelector",
-        "start": 412,
-        "end": 795
-      }
-    }
-  }],
-  "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
-  "@id": "http://localhost:8089/annotationgraph/UUID-D"
-}' 'http://localhost:8089/annotations/asynch/{annotationId}?annotationdId=21b4a142-af56-4dce-9f6c-0a6875933353'
+curl -X GET --header 'Accept: application/json' --header 'X-Request-ID: 123123' 'http://localhost:8089/annotations/status/feda3dc4-0111-4fc5-8c1a-be2ccb7a13f6'
 
 ```
-
 
 # Docker
 

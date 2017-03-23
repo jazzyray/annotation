@@ -2,22 +2,24 @@ package com.ontotext.annotation.representation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.net.URI;
+
 public class AnnotationResult {
 
-        private String location;
+        private URI location;
         private String status;
 
         public AnnotationResult() {
             // Jackson deserialization
         }
 
-        public AnnotationResult(String location, String status) {
+        public AnnotationResult(URI location, String status) {
             this.location = location;
             this.status = status;
         }
 
         @JsonProperty
-        public String getLocation() {
+        public URI getLocation() {
             return location;
         }
 

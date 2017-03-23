@@ -3,6 +3,7 @@ package com.ontotext.annotation.service;
 import com.ontotext.annotation.representation.AnnotationResult;
 import com.ontotext.annotation.util.ResourceUtil;
 
+import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.UUID;
 
@@ -34,6 +35,33 @@ public class AnnotationService {
 
     }
 
+    public AnnotationResult createAnnotation(URI uri, String annotation) {
+        return new AnnotationResult(uri, ASYNCH_PROCESSING_STATE_COMPLETE);
+    }
+
+    public AnnotationResult asynchCreateAnnotation(URI uri, String annotation) {
+        UriBuilder uriBuilder = UriBuilder
+                .fromPath(uri.toString())
+                .path(UUID.randomUUID().toString());
+
+        return new AnnotationResult(uriBuilder.build(), ASYNCH_PROCESSING_STATE_PROCESSING);
+    }
+
+    public AnnotationResult updateAnnotation(URI uri, String annotation) {
+        return new AnnotationResult(uri, ASYNCH_PROCESSING_STATE_COMPLETE);
+    }
+
+    public AnnotationResult asynchUpdateAnnotation(URI uri, String annotation) {
+        UriBuilder uriBuilder = UriBuilder
+                .fromPath(uri.toString())
+                .scheme("http")
+                .path(UUID.randomUUID().toString());
+
+        return new AnnotationResult(uriBuilder.build(), ASYNCH_PROCESSING_STATE_PROCESSING);
+    }
+
+
+
     public String getAnnotationsByContentId(String contentId) {
         UUID contentUUID = UUID.fromString(contentId);
 
@@ -45,22 +73,58 @@ public class AnnotationService {
     }
 
     public AnnotationResult asynchAnnotation(URI uri, String body) {
-        // @TODO fix location
-        return new AnnotationResult(uri.toString() + SEP + UUID.randomUUID().toString(), ASYNCH_PROCESSING_STATE_PROCESSING);
+        UriBuilder uriBuilder = UriBuilder
+                .fromPath(uri.toString())
+                .scheme("http")
+                .path(UUID.randomUUID().toString());
+
+        return new AnnotationResult(uriBuilder.build(), ASYNCH_PROCESSING_STATE_PROCESSING);
     }
 
-    public AnnotationResult asynchAnnotationStatus(URI uri) {
-        return new AnnotationResult(uri.toString(), ASYNCH_PROCESSING_STATE_COMPLETE);
-    }
 
-    public AnnotationResult annotation(URI uri, String annotation) {
-        return new AnnotationResult(uri.toString(), ASYNCH_PROCESSING_STATE_COMPLETE);
-    }
-
-    public AnnotationResult annotations(URI uri, String contentId, String annotations){
+    public AnnotationResult createAnnotations(URI uri, String contentId, String annotations){
         UUID contentUUID = UUID.fromString(contentId);
 
-        return new AnnotationResult(uri.toString(), ASYNCH_PROCESSING_STATE_COMPLETE);
+        return new AnnotationResult(uri, ASYNCH_PROCESSING_STATE_COMPLETE);
     }
+
+    public AnnotationResult updateAnnotations(URI uri, String contentId, String annotations){
+        UUID contentUUID = UUID.fromString(contentId);
+
+        return new AnnotationResult(uri, ASYNCH_PROCESSING_STATE_COMPLETE);
+    }
+
+
+    public AnnotationResult asynchAnnotationStatus(URI uri) {
+        return new AnnotationResult(uri, ASYNCH_PROCESSING_STATE_COMPLETE);
+    }
+
+    public AnnotationResult asynchCreateAnnotations(URI uri, String contentId, String annotations){
+        UriBuilder uriBuilder = UriBuilder
+                .fromPath(uri.toString())
+                .path(UUID.randomUUID().toString());
+
+        return new AnnotationResult(uriBuilder.build(), ASYNCH_PROCESSING_STATE_PROCESSING);
+    }
+
+    public AnnotationResult asynchUpdateAnnotations(URI uri, String contentId, String annotations){
+        UriBuilder uriBuilder = UriBuilder
+                .fromPath(uri.toString())
+                .scheme("http")
+                .path(UUID.randomUUID().toString());
+
+        return new AnnotationResult(uriBuilder.build(), ASYNCH_PROCESSING_STATE_PROCESSING);
+    }
+
+    public AnnotationResult asynchAnnotationsStatus(URI uri) {
+        return new AnnotationResult(uri, ASYNCH_PROCESSING_STATE_COMPLETE);
+    }
+
+
+
+
+
+
+
 
 }

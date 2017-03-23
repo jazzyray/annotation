@@ -17,7 +17,9 @@
           "source": "http://somehost/concept/UUID-X",
           "ontoa:confidence": "0.89",
           "ontoa:relevance": "0.63",
-          "ontoa:tagType": "http://ontotext.com/annotation/about"
+          "ontoa:tagType": "http://ontotext.com/annotation/about",
+          "ontoa:type": "concept",
+          "ontoa:status": "suggested"
         },
         "target": {
           "@id": "http://localhost:8090/content/UUID-C",

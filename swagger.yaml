@@ -1,3 +1,4 @@
+---
 swagger: "2.0"
 info:
   description: "Annotation API (Using W3C Open Annotation Model (not protocol)). Supporting\
@@ -101,8 +102,29 @@ paths:
         description: "Transaction Id"
         required: false
         type: "string"
+      - name: "asynch"
+        in: "query"
+        description: "Asynchronous"
+        required: true
+        type: "boolean"
+        default: false
       responses:
         200:
+          description: "Success"
+          headers:
+            ETag:
+              type: "string"
+              description: "Annotation ETag for cache control"
+            Vary:
+              type: "string"
+              description: "Make sure proxies cache by Vary"
+            Link:
+              type: "string"
+              description: "Linked Data Platform resource type"
+            Allow:
+              type: "string"
+              description: "CORS Allowed Methods"
+        202:
           description: "Success"
           headers:
             ETag:
@@ -147,6 +169,12 @@ paths:
         description: "Transaction Id"
         required: false
         type: "string"
+      - name: "asynch"
+        in: "query"
+        description: "Asynchronous"
+        required: true
+        type: "boolean"
+        default: false
       responses:
         200:
           description: "Success"
@@ -183,7 +211,7 @@ paths:
         required: true
         schema:
           type: "string"
-      - name: "annotationId"
+      - name: "annotationdId"
         in: "path"
         description: "Annotation id uuid to create"
         required: true
@@ -307,7 +335,7 @@ paths:
         required: true
         schema:
           type: "string"
-      - name: "annotationId"
+      - name: "annotationdId"
         in: "path"
         description: "Annotation id uuid to create"
         required: true
@@ -349,7 +377,7 @@ paths:
         required: true
         schema:
           type: "string"
-      - name: "annotationId"
+      - name: "annotationdId"
         in: "path"
         description: "Annotation id uuid to create"
         required: true
