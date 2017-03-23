@@ -1,9 +1,11 @@
 package com.ontotext.annotation.service;
 
+import com.ontotext.annotation.exception.MalFormedAnnotation;
 import com.ontotext.annotation.representation.AnnotationResult;
 import com.ontotext.annotation.util.ResourceUtil;
 
 import javax.ws.rs.core.UriBuilder;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.UUID;
 
@@ -36,7 +38,11 @@ public class AnnotationService {
     }
 
     public AnnotationResult createAnnotation(URI uri, String annotation) {
-        return new AnnotationResult(uri, ASYNCH_PROCESSING_STATE_COMPLETE);
+        if (annotation.equals(ANNOTATION_JSON)) {
+            return new AnnotationResult(uri, ASYNCH_PROCESSING_STATE_COMPLETE);
+        } else {
+            throw new MalFormedAnnotation();
+        }
     }
 
     public AnnotationResult asynchCreateAnnotation(URI uri, String annotation) {

@@ -22,7 +22,7 @@ http://localhost:8089/swagger
 
 ### Get annotation
 ```
-curl -X GET --header 'Accept: application/ld+json' --header 'X-Request-ID: 234234' 'http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353'
+curl -X GET --header 'Accept: application/ld+json' --header 'X-Request-ID: 62bf23fe-0fbe-11e7-93ae-92361f002671' 'http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353'
 ```
 
 ### Create annoation

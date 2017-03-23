@@ -1,6 +1,7 @@
 package com.ontotext.annotation.resource;
 
 import com.codahale.metrics.annotation.Timed;
+import com.ontotext.annotation.exception.MalFormedAnnotation;
 import com.ontotext.annotation.representation.AnnotationResult;
 
 import com.ontotext.annotation.service.AnnotationService;
@@ -98,26 +99,39 @@ public class AnnotationResource {
                                      @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
                                      @ApiParam(value = "Asynchronous", required = true, defaultValue = "false") @QueryParam("asynch") Boolean asynch,
                                      @Context UriInfo uriInfo) {
-        if (!asynch) {
-            URI syncLnk = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId.toString()).build();
-            AnnotationResult annotationResult = this.annotationService.createAnnotation(syncLnk, annotation);
-            return Response.ok(annotationResult.getLocation()).entity(annotationResult)
-                    .header("Location", annotationResult.getLocation())
-                    .header(HttpHeaders.VARY, "Accept")
-                    .header(HttpHeaders.ETAG, "_87e52ce126126")
-                    .header(HttpHeaders.ALLOW, HttpMethod.POST)
-                    .header(HttpHeaders.ALLOW, HttpMethod.PUT)
-                    .build();
+
+        if (annotationId.equals(MOCK_ANNOTATION_ID)) {
+            try {
+                if (!asynch) {
+                    URI syncLnk = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId.toString()).build();
+                    AnnotationResult annotationResult = this.annotationService.createAnnotation(syncLnk, annotation);
+                    return Response.ok(annotationResult.getLocation()).entity(annotationResult)
+                            .header("Location", annotationResult.getLocation())
+                            .header(HttpHeaders.VARY, "Accept")
+                            .header(HttpHeaders.ETAG, "_87e52ce126126")
+                            .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                            .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                            .build();
+                } else {
+                    URI asyncLnk = uriInfo.getBaseUriBuilder().path("annotations").path("status").build();
+                    AnnotationResult annotationResult = this.annotationService.asynchCreateAnnotation(asyncLnk, annotation);
+                    return Response.accepted(annotationResult.getLocation()).entity(annotationResult)
+                            .header("Location", annotationResult.getLocation())
+                            .header(HttpHeaders.VARY, "Accept")
+                            .header(HttpHeaders.ETAG, "_87e52ce126126")
+                            .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                            .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                            .build();
+                }
+            } catch (MalFormedAnnotation mfa) {
+                URI link = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId.toString()).build();
+                AnnotationResult result = new AnnotationResult(link, "Bad Request Malformed Annotation");
+                return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(result).build();
+            }
         } else {
-            URI asyncLnk = uriInfo.getBaseUriBuilder().path("annotations").path("status").build();
-            AnnotationResult annotationResult = this.annotationService.asynchCreateAnnotation(asyncLnk, annotation);
-            return Response.accepted(annotationResult.getLocation()).entity(annotationResult)
-                    .header("Location", annotationResult.getLocation())
-                    .header(HttpHeaders.VARY, "Accept")
-                    .header(HttpHeaders.ETAG, "_87e52ce126126")
-                    .header(HttpHeaders.ALLOW, HttpMethod.POST)
-                    .header(HttpHeaders.ALLOW, HttpMethod.PUT)
-                    .build();
+            URI link = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId.toString()).build();
+            AnnotationResult result = new AnnotationResult(link, "NOT FOUND");
+            return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(result).build();
         }
     }
 
@@ -146,26 +160,38 @@ public class AnnotationResource {
                                      @ApiParam(value = "Asynchronous", required = true, defaultValue = "false") @QueryParam("asynch") Boolean asynch,
                                      @Context UriInfo uriInfo) {
 
-        if (!asynch) {
-            URI syncLnk = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId).build();
-            AnnotationResult annotationResult = this.annotationService.updateAnnotation(syncLnk, annotation);
-            return Response.ok(annotationResult.getLocation()).entity(annotationResult)
-                    .header("Location", annotationResult.getLocation())
-                    .header(HttpHeaders.VARY, "Accept")
-                    .header(HttpHeaders.ETAG, "_87e52ce126126")
-                    .header(HttpHeaders.ALLOW, HttpMethod.POST)
-                    .header(HttpHeaders.ALLOW, HttpMethod.PUT)
-                    .build();
+        if (annotationId.equals(MOCK_ANNOTATION_ID)) {
+            try {
+                if (!asynch) {
+                    URI syncLnk = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId).build();
+                    AnnotationResult annotationResult = this.annotationService.updateAnnotation(syncLnk, annotation);
+                    return Response.ok(annotationResult.getLocation()).entity(annotationResult)
+                            .header("Location", annotationResult.getLocation())
+                            .header(HttpHeaders.VARY, "Accept")
+                            .header(HttpHeaders.ETAG, "_87e52ce126126")
+                            .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                            .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                            .build();
+                } else {
+                    URI asyncLnk = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId).path("status").build();
+                    AnnotationResult annotationResult = this.annotationService.asynchUpdateAnnotation(asyncLnk, annotation);
+                    return Response.accepted(annotationResult.getLocation()).entity(annotationResult)
+                            .header("Location", annotationResult.getLocation())
+                            .header(HttpHeaders.VARY, "Accept")
+                            .header(HttpHeaders.ETAG, "_87e52ce126126")
+                            .header(HttpHeaders.ALLOW, HttpMethod.POST)
+                            .header(HttpHeaders.ALLOW, HttpMethod.PUT)
+                            .build();
+                }
+            } catch (MalFormedAnnotation mfa) {
+                URI link = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId.toString()).build();
+                AnnotationResult result = new AnnotationResult(link, "Bad Request Malformed Annotation");
+                return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).entity(result).build();
+            }
         } else {
-            URI asyncLnk = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId).path("status").build();
-            AnnotationResult annotationResult = this.annotationService.asynchUpdateAnnotation(asyncLnk, annotation);
-            return Response.accepted(annotationResult.getLocation()).entity(annotationResult)
-                    .header("Location", annotationResult.getLocation())
-                    .header(HttpHeaders.VARY, "Accept")
-                    .header(HttpHeaders.ETAG, "_87e52ce126126")
-                    .header(HttpHeaders.ALLOW, HttpMethod.POST)
-                    .header(HttpHeaders.ALLOW, HttpMethod.PUT)
-                    .build();
+            URI link = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId.toString()).build();
+            AnnotationResult result = new AnnotationResult(link, "NOT FOUND");
+            return Response.status(HttpURLConnection.HTTP_NOT_FOUND).entity(result).build();
         }
     }
 
@@ -175,7 +201,7 @@ public class AnnotationResource {
     @Produces({MediaType.APPLICATION_JSON})
     @ApiOperation(value = "Asynchronous publication/creation annotation status")
     @ApiResponses(value = {
-            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Invalid ProcessId supplied"),
+            @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Unknown annotation and processId"),
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Ok",
                     responseHeaders = {@ResponseHeader(name = "X-Cache", description = "Explains whether or not a cache was used", response = Boolean.class),
                             @ResponseHeader(name = HttpHeaders.VARY, description = "Make sure proxies cache by Vary", response = String.class),
