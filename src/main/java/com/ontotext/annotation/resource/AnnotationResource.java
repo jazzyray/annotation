@@ -223,7 +223,6 @@ public class AnnotationResource {
                 .build();
     }
 
-
     // GET /annotations?contentId=X&max=10&offset=Y
     @GET
     @Timed

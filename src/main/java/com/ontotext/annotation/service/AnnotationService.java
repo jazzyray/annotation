@@ -5,7 +5,6 @@ import com.ontotext.annotation.representation.AnnotationResult;
 import com.ontotext.annotation.util.ResourceUtil;
 
 import javax.ws.rs.core.UriBuilder;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.UUID;
 
@@ -66,8 +65,6 @@ public class AnnotationService {
         return new AnnotationResult(uriBuilder.build(), ASYNCH_PROCESSING_STATE_PROCESSING);
     }
 
-
-
     public String getAnnotationsByContentId(String contentId) {
         UUID contentUUID = UUID.fromString(contentId);
 
@@ -86,7 +83,6 @@ public class AnnotationService {
 
         return new AnnotationResult(uriBuilder.build(), ASYNCH_PROCESSING_STATE_PROCESSING);
     }
-
 
     public AnnotationResult createAnnotations(URI uri, String contentId, String annotations){
         UUID contentUUID = UUID.fromString(contentId);
@@ -125,12 +121,5 @@ public class AnnotationService {
     public AnnotationResult asynchAnnotationsStatus(URI uri) {
         return new AnnotationResult(uri, ASYNCH_PROCESSING_STATE_COMPLETE);
     }
-
-
-
-
-
-
-
 
 }
