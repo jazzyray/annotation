@@ -4,6 +4,9 @@ Annotation API Mock and Specification
 Mock Annotation API for the annotation of content with named entities
 
 
+# Documented on Apiary
+http://docs.annotation2.apiary.io/#
+
 # Quick test
 
 ```
