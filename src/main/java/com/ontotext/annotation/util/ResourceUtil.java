@@ -16,4 +16,8 @@ public class ResourceUtil {
         }
     }
 
+
+    public static final InputStream getResourceFileAsStream(String resource) {
+        return ResourceUtil.class.getClassLoader().getResourceAsStream(resource);
+    }
 }
