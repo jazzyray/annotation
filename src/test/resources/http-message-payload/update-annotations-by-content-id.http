@@ -1,4 +1,4 @@
-POST /annotations?contentId=tsk550fnfym8&asynch=false HTTP/1.1
+PUT /annotations?contentId=tsk550fnfym8&asynch=false HTTP/1.1
 Host: localhost:9101
 Content-Type: application/json
 X-Request-ID: 4b6c6796-0fca-11e7-93ae-92361f002671
