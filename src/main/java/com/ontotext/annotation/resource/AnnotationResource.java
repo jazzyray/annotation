@@ -2,6 +2,8 @@ package com.ontotext.annotation.resource;
 
 import com.codahale.metrics.annotation.Timed;
 import com.ontotext.annotation.exception.MalFormedAnnotation;
+import com.ontotext.annotation.exception.UnknownAnnotationId;
+import com.ontotext.annotation.exception.UnknownContentId;
 import com.ontotext.annotation.representation.AnnotationResult;
 
 import com.ontotext.annotation.service.AnnotationService;
@@ -59,7 +61,9 @@ public class AnnotationResource {
         try {
             result = annotationService.getAnnotationById(annotationId);
         } catch (IllegalArgumentException ia) {
-            Response.status(HttpURLConnection.HTTP_BAD_REQUEST).build();
+            return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).build();
+        } catch (UnknownAnnotationId uai) {
+            return Response.status(HttpURLConnection.HTTP_NOT_FOUND).build();
         }
         if (!result.equals("")) {
             return Response.ok().entity(result)
@@ -113,7 +117,7 @@ public class AnnotationResource {
                             .header(HttpHeaders.ALLOW, HttpMethod.PUT)
                             .build();
                 } else {
-                    URI asyncLnk = uriInfo.getBaseUriBuilder().path("annotations").path("status").build();
+                    URI asyncLnk = uriInfo.getBaseUriBuilder().path("annotations").path(annotationId.toString()).path("status").build();
                     AnnotationResult annotationResult = this.annotationService.asynchCreateAnnotation(asyncLnk, annotation);
                     return Response.accepted(annotationResult.getLocation()).entity(annotationResult)
                             .header("Location", annotationResult.getLocation())
@@ -243,7 +247,9 @@ public class AnnotationResource {
         try {
             result = annotationService.getAnnotationsByContentId(contentId);
         } catch (IllegalArgumentException ia) {
-            Response.status(HttpURLConnection.HTTP_BAD_REQUEST).build();
+            return Response.status(HttpURLConnection.HTTP_BAD_REQUEST).build();
+        } catch (UnknownContentId uci) {
+            return Response.status(HttpURLConnection.HTTP_NOT_FOUND).build();
         }
 
         if (!result.equals("")) {

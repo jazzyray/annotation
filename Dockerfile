@@ -13,8 +13,8 @@ COPY start.sh /data/annotation-api
 COPY target/annotation-0.0.1-SNAPSHOT.jar /data/annotation-api/target
 COPY annotation-configuration.yml /data/annotation-api
 
-EXPOSE 8089
-EXPOSE 8090
+EXPOSE 9101
+EXPOSE 9102
 
 ENV JAVA_HOME /usr/lib/jvm/jre-1.8.0-openjdk
 CMD /data/annotation-api/start.sh

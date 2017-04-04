@@ -1,17 +1,21 @@
 package com.ontotext.annotation.service;
 
+import com.google.common.hash.Hashing;
 import com.ontotext.annotation.exception.MalFormedAnnotation;
+import com.ontotext.annotation.exception.UnknownAnnotationId;
+import com.ontotext.annotation.exception.UnknownContentId;
 import com.ontotext.annotation.representation.AnnotationResult;
 import com.ontotext.annotation.util.ResourceUtil;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class AnnotationService {
 
-    public static final String MOCK_ANNOTATION_ID = "21b4a142-af56-4dce-9f6c-0a6875933353";
-    public static final String MOCK_CONTENT_ID = "963db081-4200-430f-89dc-5756ca8edf04";
+    public static final String MOCK_ANNOTATION_ID = "tsn5dytas6bk";
+    public static final String MOCK_CONTENT_ID = "tsk550fnfym8";
 
     public static final String ANNOTATION_JSON_FILENAME = "json/annotation.json";
     public static final String ANNOTATION_JSON = ResourceUtil.getResourceFileAsString(ANNOTATION_JSON_FILENAME);
@@ -26,12 +30,10 @@ public class AnnotationService {
 
 
     public String getAnnotationById(String annotationId) {
-        UUID annotationUUID = UUID.fromString(annotationId);
-
         if (annotationId.equals(MOCK_ANNOTATION_ID)) {
             return ANNOTATION_JSON;
         } else {
-            return "";
+            throw new UnknownAnnotationId(annotationId);
         }
 
     }
@@ -66,22 +68,12 @@ public class AnnotationService {
     }
 
     public String getAnnotationsByContentId(String contentId) {
-        UUID contentUUID = UUID.fromString(contentId);
 
         if (contentId.equals(MOCK_CONTENT_ID)) {
             return ANNOTATION_BY_ID_JSON;
         } else {
-            return "";
+            throw new UnknownContentId(contentId);
         }
-    }
-
-    public AnnotationResult asynchAnnotation(URI uri, String body) {
-        UriBuilder uriBuilder = UriBuilder
-                .fromPath(uri.toString())
-                .scheme("http")
-                .path(UUID.randomUUID().toString());
-
-        return new AnnotationResult(uriBuilder.build(), ASYNCH_PROCESSING_STATE_PROCESSING);
     }
 
     public AnnotationResult createAnnotations(URI uri, String contentId, String annotations){
