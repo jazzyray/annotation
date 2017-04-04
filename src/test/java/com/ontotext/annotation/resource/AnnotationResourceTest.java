@@ -30,15 +30,32 @@ public class AnnotationResourceTest {
             .setTestContainerFactory(new GrizzlyWebTestContainerFactory())
             .build();
 
-
     @Before
-    public void setUp() {
+    public void setUp() {}
 
+    // GET /annotations/{annotationId}
+    @Test
+    public void getAnnotationSucess() throws JsonProcessingException {
+        URI uri = UriBuilder.fromPath("/annotations")
+                .path(AnnotationService.MOCK_ANNOTATION_ID).build();
+
+        AnnotationResult annotationResult = new AnnotationResult(uri, AnnotationService.ASYNCH_PROCESSING_STATE_COMPLETE);
+        when(ANNOTATION_SERVICE.createAnnotation(any(URI.class),eq(AnnotationService.ANNOTATION_JSON))).thenReturn(annotationResult);
+
+        final Response response = RULE.getJerseyTest().target("/annotations")
+                .path(AnnotationService.MOCK_ANNOTATION_ID)
+                .request(AnnotationResource.ANNOTATION_MIME_TYPE)
+                .get();
+
+        String annotationResultFromCall = response.readEntity(String.class);
+
+        assertThat(response.getStatusInfo()).isEqualTo(Response.Status.OK);
+        assertThat(annotationResultFromCall).isEqualTo(AnnotationService.ANNOTATION_JSON);
+        System.out.println("Status: " + response.getStatusInfo());
+        System.out.println("Response: " + annotationResultFromCall);
     }
 
-
     // POST /annotations/{annotationId}?asynch=false
-    @Ignore
     @Test
     public void createAnnotationSucess() throws JsonProcessingException {
         URI uri = UriBuilder.fromPath("/annotations")
@@ -59,11 +76,30 @@ public class AnnotationResourceTest {
         assertThat(response.getStatusInfo()).isEqualTo(Response.Status.OK);
         assertThat(annotationResultFromCall.getLocation()).isEqualTo(uri);
         assertThat(annotationResultFromCall.getStatus()).isEqualTo(AnnotationService.ASYNCH_PROCESSING_STATE_COMPLETE);
-
-        // @TODO check headers
-
     }
 
-    // createAnnotationAsynchSuccess
+
+    // PUT /annotations/{annotationId}?asynch=false
+    @Test
+    public void updateAnnotationSucess() throws JsonProcessingException {
+        URI uri = UriBuilder.fromPath("/annotations")
+                .path(AnnotationService.MOCK_ANNOTATION_ID)
+                .queryParam("asych", "false").build();
+
+        AnnotationResult annotationResult = new AnnotationResult(uri, AnnotationService.ASYNCH_PROCESSING_STATE_COMPLETE);
+        when(ANNOTATION_SERVICE.createAnnotation(any(URI.class),eq(AnnotationService.ANNOTATION_JSON))).thenReturn(annotationResult);
+
+        final Response response = RULE.getJerseyTest().target("/annotations")
+                .path(AnnotationService.MOCK_ANNOTATION_ID)
+                .queryParam("asynch", "false")
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(AnnotationService.ANNOTATION_JSON, AnnotationResource.ANNOTATION_MIME_TYPE));
+
+        AnnotationResult annotationResultFromCall = response.readEntity(AnnotationResult.class);
+
+        assertThat(response.getStatusInfo()).isEqualTo(Response.Status.OK);
+        assertThat(annotationResultFromCall.getLocation()).isEqualTo(uri);
+        assertThat(annotationResultFromCall.getStatus()).isEqualTo(AnnotationService.ASYNCH_PROCESSING_STATE_COMPLETE);
+    }
 
 }

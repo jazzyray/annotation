@@ -159,7 +159,6 @@ public class AnnotationResource {
                                      @ApiParam(value = "Transaction Id", required = false ) @HeaderParam("X-Request-ID") String transactionId,
                                      @ApiParam(value = "Asynchronous", required = true, defaultValue = "false") @QueryParam("asynch") Boolean asynch,
                                      @Context UriInfo uriInfo) {
-
         if (annotationId.equals(MOCK_ANNOTATION_ID)) {
             try {
                 if (!asynch) {
