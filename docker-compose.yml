@@ -1,4 +1,4 @@
 annotation:
   image: quay.io/ontotext/annotation
   ports:
-  - "8089:8089"
+  - "9101:9101"

@@ -1,21 +1,25 @@
 {
   "@graph": [{
-    "@id": "http://localhost:8089/annotations/21b4a142-af56-4dce-9f6c-0a6875933353",
+    "@id": "http://data.ontotext.com/annotation/tsn5dytas6bk",
     "type": "Annotation",
     "motivation": "tagging",
     "body": {
-      "@id": "http://locahost:8089/annotations/UUID-B",
+      "@id": "http:/data.ontotext.com/annotation/body/tsk9k4aunvgg",
       "type": "SpecificResource",
       "purpose": "tagging",
-      "source": "http://somehost/concept/UUID-X",
-      "ontoa:confidence": "0.89",
-      "ontoa:relevance": "0.63",
-      "ontoa:tagType": "http://ontotext.com/annotation/about",
-      "ontoa:type": "concept",
-      "ontoa:status": "suggested"
+      "source": "http://ontology.ontotext.com/resource/tslsht48nsw0",
+      "ontoa:hasFeatures": {
+        "@id": "http:/data.ontotext.com/annotation/features/tsk9k4aunvg2",
+        "ontoa:class": { "@id": "http://ontology.ontotext.com/taxonomy/Keyphrase" },
+        "ontoa:confidence": "0.89",
+        "ontoa:relevanceScore": "0.63",
+        "ontoa:tagType": "http://ontotext.com/annotation/about",
+        "ontoa:type": "concept",
+        "ontoa:status": "suggested"
+      }
     },
     "target": {
-      "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04",
+      "@id": "http://data.ontotext.com/content/tsk550fnfym8",
       "type": "Text",
       "selector": {
         "type": "TextPositionSelector",
@@ -24,6 +28,6 @@
       }
     }
   }],
-  "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontotext.com/annoation/0.1"}],
-  "@id": "http://localhost:8090/content/963db081-4200-430f-89dc-5756ca8edf04"
+  "@context": ["http://www.w3.org/ns/anno.jsonld", {"ontoa": "http://ontology.ontotext.com/annotation#"}],
+  "@id": "http://data.ontotext.com/content/tsk550fnfym8"
 }

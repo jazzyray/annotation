@@ -33,7 +33,7 @@ paths:
         description: "Target content Id"
         required: false
         type: "string"
-        default: "963db081-4200-430f-89dc-5756ca8edf04"
+        default: "tsk550fnfym8"
       - name: "max"
         in: "query"
         description: "The number of records to display per page"
@@ -96,7 +96,7 @@ paths:
         description: "Target content Id"
         required: false
         type: "string"
-        default: "963db081-4200-430f-89dc-5756ca8edf04"
+        default: "tsk550fnfym8"
       - name: "X-Request-ID"
         in: "header"
         description: "Transaction Id"
@@ -163,7 +163,7 @@ paths:
         description: "Target content Id"
         required: false
         type: "string"
-        default: "963db081-4200-430f-89dc-5756ca8edf04"
+        default: "tsk550fnfym8"
       - name: "X-Request-ID"
         in: "header"
         description: "Transaction Id"
@@ -261,7 +261,7 @@ paths:
         description: "Annotation Id to be retrieved. Must be a valid UUID"
         required: true
         type: "string"
-        default: "21b4a142-af56-4dce-9f6c-0a6875933353"
+        default: "tsn5dytas6bk"
       - name: "X-Request-ID"
         in: "header"
         description: "Transaction Id"
@@ -330,7 +330,7 @@ paths:
         description: "Annotation Id to be retrieved. Must be a valid UUID"
         required: true
         type: "string"
-        default: "21b4a142-af56-4dce-9f6c-0a6875933353"
+        default: "tsn5dytas6bk"
       - name: "X-Request-ID"
         in: "header"
         description: "Transaction Id"
@@ -391,7 +391,7 @@ paths:
         description: "Annotation Id to be retrieved. Must be a valid UUID"
         required: true
         type: "string"
-        default: "21b4a142-af56-4dce-9f6c-0a6875933353"
+        default: "tsn5dytas6bk"
       - name: "X-Request-ID"
         in: "header"
         description: "Transaction Id"

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ontotext.annotation.representation.AnnotationResult;
 import com.ontotext.annotation.service.AnnotationService;
 import io.dropwizard.testing.junit.ResourceTestRule;
-import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
+import org.glassfish.jersey.test.JerseyTest;
 import org.junit.*;
 
 
@@ -27,25 +27,30 @@ public class AnnotationResourceTest {
     @Rule
     public final ResourceTestRule RULE = ResourceTestRule.builder()
             .addResource(new AnnotationResource(ANNOTATION_SERVICE))
-            .setTestContainerFactory(new GrizzlyWebTestContainerFactory())
             .build();
 
+
     @Before
-    public void setUp() {}
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() throws Exception {
+    }
 
     // GET /annotations/{annotationId}
     @Test
-    public void getAnnotationSucess() throws JsonProcessingException {
+    public void getAnnotationSucess() throws Exception {
         URI uri = UriBuilder.fromPath("/annotations")
                 .path(AnnotationService.MOCK_ANNOTATION_ID).build();
 
         AnnotationResult annotationResult = new AnnotationResult(uri, AnnotationService.ASYNCH_PROCESSING_STATE_COMPLETE);
         when(ANNOTATION_SERVICE.createAnnotation(any(URI.class),eq(AnnotationService.ANNOTATION_JSON))).thenReturn(annotationResult);
 
-        final Response response = RULE.getJerseyTest().target("/annotations")
-                .path(AnnotationService.MOCK_ANNOTATION_ID)
-                .request(AnnotationResource.ANNOTATION_MIME_TYPE)
-                .get();
+        final Response response = RULE.client().target("/annotations")
+            .path(AnnotationService.MOCK_ANNOTATION_ID)
+            .request(AnnotationResource.ANNOTATION_MIME_TYPE)
+            .get();
 
         String annotationResultFromCall = response.readEntity(String.class);
 
@@ -53,6 +58,7 @@ public class AnnotationResourceTest {
         assertThat(annotationResultFromCall).isEqualTo(AnnotationService.ANNOTATION_JSON);
         System.out.println("Status: " + response.getStatusInfo());
         System.out.println("Response: " + annotationResultFromCall);
+
     }
 
     // POST /annotations/{annotationId}?asynch=false
@@ -65,7 +71,7 @@ public class AnnotationResourceTest {
         AnnotationResult annotationResult = new AnnotationResult(uri, AnnotationService.ASYNCH_PROCESSING_STATE_COMPLETE);
         when(ANNOTATION_SERVICE.createAnnotation(any(URI.class),eq(AnnotationService.ANNOTATION_JSON))).thenReturn(annotationResult);
 
-        final Response response = RULE.getJerseyTest().target("/annotations")
+        final Response response = RULE.client().target("/annotations")
                                     .path(AnnotationService.MOCK_ANNOTATION_ID)
                                     .queryParam("asynch", "false")
                                     .request(MediaType.APPLICATION_JSON)
@@ -87,9 +93,9 @@ public class AnnotationResourceTest {
                 .queryParam("asych", "false").build();
 
         AnnotationResult annotationResult = new AnnotationResult(uri, AnnotationService.ASYNCH_PROCESSING_STATE_COMPLETE);
-        when(ANNOTATION_SERVICE.createAnnotation(any(URI.class),eq(AnnotationService.ANNOTATION_JSON))).thenReturn(annotationResult);
+        when(ANNOTATION_SERVICE.updateAnnotation(any(URI.class),eq(AnnotationService.ANNOTATION_JSON))).thenReturn(annotationResult);
 
-        final Response response = RULE.getJerseyTest().target("/annotations")
+        final Response response = RULE.client().target("/annotations")
                 .path(AnnotationService.MOCK_ANNOTATION_ID)
                 .queryParam("asynch", "false")
                 .request(MediaType.APPLICATION_JSON)
