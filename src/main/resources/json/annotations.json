@@ -5,7 +5,6 @@
       "type": "Annotation",
       "motivation": "tagging",
       "body": {
-        "@id": "http:/data.ontotext.com/annotation/body/tsk9k4aunvgg",
         "type": "SpecificResource",
         "purpose": "tagging",
         "source": "http://ontology.ontotext.com/resource/tslsht48nsw0",
@@ -20,7 +19,7 @@
         }
       },
       "target": {
-        "@id": "http://data.ontotext.com/content/tsk550fnfym8",
+        "source": "http://data.ontotext.com/content/tsk550fnfym8",
         "type": "Text",
         "selector": {
           "type": "TextPositionSelector",
