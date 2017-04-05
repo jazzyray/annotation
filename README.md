@@ -34,7 +34,6 @@ curl -X POST --header 'Content-Type: application/ld+json; profile="http://www.w3
     "type": "Annotation",
     "motivation": "tagging",
     "body": {
-      "@id": "http:/data.ontotext.com/annotation/body/tsk9k4aunvgg",
       "type": "SpecificResource",
       "purpose": "tagging",
       "source": "http://ontology.ontotext.com/resource/tslsht48nsw0",
@@ -49,7 +48,7 @@ curl -X POST --header 'Content-Type: application/ld+json; profile="http://www.w3
       }
     },
     "target": {
-      "@id": "http://data.ontotext.com/content/tsk550fnfym8",
+      "source": "http://data.ontotext.com/content/tsk550fnfym8",
       "type": "Text",
       "selector": {
         "type": "TextPositionSelector",
@@ -71,7 +70,6 @@ curl -X POST --header 'Content-Type: application/ld+json; profile="http://www.w3
       "type": "Annotation",
       "motivation": "tagging",
       "body": {
-        "@id": "http:/data.ontotext.com/annotation/body/tsk9k4aunvgg",
         "type": "SpecificResource",
         "purpose": "tagging",
         "source": "http://ontology.ontotext.com/resource/tslsht48nsw0",
@@ -86,7 +84,7 @@ curl -X POST --header 'Content-Type: application/ld+json; profile="http://www.w3
         }
       },
       "target": {
-        "@id": "http://data.ontotext.com/content/tsk550fnfym8",
+        "source": "http://data.ontotext.com/content/tsk550fnfym8",
         "type": "Text",
         "selector": {
           "type": "TextPositionSelector",
@@ -119,7 +117,6 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
       "type": "Annotation",
       "motivation": "tagging",
       "body": {
-        "@id": "http:/data.ontotext.com/annotation/body/tsk9k4aunvgg",
         "type": "SpecificResource",
         "purpose": "tagging",
         "source": "http://ontology.ontotext.com/resource/tslsht48nsw0",
@@ -134,7 +131,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
         }
       },
       "target": {
-        "@id": "http://data.ontotext.com/content/tsk550fnfym8",
+        "source": "http://data.ontotext.com/content/tsk550fnfym8",
         "type": "Text",
         "selector": {
           "type": "TextPositionSelector",
@@ -158,7 +155,6 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
       "type": "Annotation",
       "motivation": "tagging",
       "body": {
-        "@id": "http:/data.ontotext.com/annotation/body/tsk9k4aunvgg",
         "type": "SpecificResource",
         "purpose": "tagging",
         "source": "http://ontology.ontotext.com/resource/tslsht48nsw0",
@@ -173,7 +169,7 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
         }
       },
       "target": {
-        "@id": "http://data.ontotext.com/content/tsk550fnfym8",
+        "source": "http://data.ontotext.com/content/tsk550fnfym8",
         "type": "Text",
         "selector": {
           "type": "TextPositionSelector",
